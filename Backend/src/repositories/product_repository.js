@@ -26,15 +26,18 @@ class ProductRepository{
         }
     }
 
-    createProduct = async(title, description, price, image) => {
+    createProduct = async(title, description, price,categoryId, image) => {
         try{
 
             const response = await Product.create({
                 title,
                 description,
                 price,
+                categoryId,
                 image
             })
+
+            return response
 
         }catch(err){
             console.log(err)
@@ -49,6 +52,22 @@ class ProductRepository{
             const response = await Product.destroy({
                 where: {
                     id: productId
+                }
+            })
+            return response
+
+        }catch(err){
+            console.log(err)
+            throw err
+        }
+    }
+
+    getProductsByCategory = async(categoryId) => {
+        try{
+
+            const response = await Product.findAll({
+                where: {
+                    categoryId: categoryId
                 }
             })
             return response

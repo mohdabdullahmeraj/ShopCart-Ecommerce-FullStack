@@ -36,7 +36,7 @@ app.listen(PORT, async() => {
     if(DB_FORCE == true){
       await db.sync({force: true})
     }else if(DB_ALTER == true){
-      await db.sync({alert: true})
+      await db.sync({alter: true})
     }else{
       await db.sync()
     }

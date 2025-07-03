@@ -2,8 +2,9 @@ const { StatusCodes, ReasonPhrases } = require("http-status-codes")
 const CategoryService = require('../services/category_service')
 const CategoryRepository = require("../repositories/category_repository")
 const { errorResponse } = require("../utils/error_response")
+const { ProductRepository } = require("../repositories")
 
-const categoryService = new CategoryService(new CategoryRepository)
+const categoryService = new CategoryService(new CategoryRepository(), new ProductRepository())
 
 const createCategory = async(req, res) => {
 
@@ -92,9 +93,33 @@ const deleteCategory = async(req, res) => {
             .json(errorResponse(ReasonPhrases.INTERNAL_SERVER_ERROR, err))    }   
 }
 
+const getProductsByCategory = async(req, res) => {
+    try{
+
+        const response = await categoryService.getProductsByCategory(req.params.id)
+        return res
+            .status(StatusCodes.OK)
+            .json({
+                success: true,
+                error: {},
+                message: "Successfully fetched products for category",
+                data: response
+            })
+
+    }catch(err){
+        console.log("Category Controller: Something happened", err)
+        console.log("Error name: ", err.name)
+
+        return res
+            .status(err.statusCode)
+            .json(errorResponse(err.reason, err))
+    }
+}
+
 module.exports = {
     getCategories,
     getCategory,
     createCategory,
-    deleteCategory
+    deleteCategory,
+    getProductsByCategory
 }

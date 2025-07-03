@@ -42,7 +42,7 @@ class ProductService {
         }
     }
 
-    deleteProduct = async() => {
+    deleteProduct = async(id) => {
         try{
             const response = await this.repository.deleteProduct(id)
             return response
