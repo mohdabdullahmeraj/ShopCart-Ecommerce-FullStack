@@ -5,13 +5,24 @@ class CategoryService {
     constructor (repository){
         this.repository = repository
     }
+    
+    createCategory = async(category) => {
+        try{
+            const response = await this.repository.createCategory(category.name, category.description)
+            return response
+    
+        }catch(err){
+            console.log("CategoryService: ",err)
+            throw new internalServerError
+        }
+    }
 
     getCategories = async() => {
         try{
             const response = await this.repository.getCategories()
             return response
         }catch(err){
-            console.log("CategorySerice: ",err)
+            console.log("CategoryService: ",err)
             throw new internalServerError
         }
     }
@@ -28,21 +39,11 @@ class CategoryService {
             if(err.name === "NotFoundError") {
                 throw err;
             }
-            console.log("CategorySerice: ",err);
+            console.log("CategoryService: ",err);
             throw new internalServerError();
         }
     }
 
-    createCategory = async(category) => {
-        try{
-            const response = await this.repository.createCategory(category.name, category.description)
-            return response
-
-        }catch(err){
-            console.log("CategorySerice: ",err)
-            throw new internalServerError
-        }
-    }
 
     deleteCategory = async(categoryID) => {
         try{
@@ -50,7 +51,7 @@ class CategoryService {
             return response
 
         }catch(err){
-            console.log("CategorySerice: ",err)
+            console.log("CategoryService: ",err)
             throw new internalServerError
         }
     }

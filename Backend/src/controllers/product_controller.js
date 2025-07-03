@@ -1,8 +1,9 @@
 const { StatusCodes, ReasonPhrases } = require("http-status-codes")
 const ProductService = require('../services/product_service')
-const FakeStoreRepository = require("../repositories/fake_store_repository")
+const ProductRepository = require('../repositories/product_repository')
+const { errorResponse } = require("../utils/error_response")
 
-const productService = new ProductService(new FakeStoreRepository)
+const productService = new ProductService(new ProductRepository)
 
 const createProduct = async(req, res) => {
 
@@ -21,7 +22,10 @@ const createProduct = async(req, res) => {
 
 
     }catch(err){
-        console.log("Something happened", err)
+        console.log("Product Controller: Something happened", err)
+        return res
+            .status(err.statusCode)
+            .json(errorResponse(err.reason, err))
     }
 
 }
@@ -40,7 +44,10 @@ const getProducts = async (req, res) =>{
         })
 
     }catch(err){
-        console.log("Something went wrong", err)
+        console.log("Product Controller: Something happened", err)
+        return res
+            .status(err.statusCode)
+            .json(errorResponse(err.reason, err))
     }
 }
 
@@ -58,12 +65,37 @@ const getProduct = async (req, res) => {
         }) 
 
     }catch(err){
-        console.log("Something happened", err)
+        console.log("Product Controller: Something happened", err)
+        return res
+            .status(err.statusCode)
+            .json(errorResponse(err.reason, err))
+    }
+}
+
+const deleteProduct = async(req, res) => {
+    try{
+
+        const response = await productService.deleteProduct(req.params.id)
+        return res
+            .status(StatusCodes.OK)
+            .json({
+                success:true,
+                error: {},
+                message: "Successfully deleted product",
+                data: response
+            })
+
+    }catch(err){
+        console.log("Product Controller: Something happened", err)
+        return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json(errorResponse(ReasonPhrases.INTERNAL_SERVER_ERROR, err))
     }
 }
 
 module.exports = {
     createProduct,
     getProducts,
-    getProduct
+    getProduct,
+    deleteProduct
 }

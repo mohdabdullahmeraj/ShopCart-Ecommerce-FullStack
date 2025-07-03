@@ -5,6 +5,31 @@ const { errorResponse } = require("../utils/error_response")
 
 const categoryService = new CategoryService(new CategoryRepository)
 
+const createCategory = async(req, res) => {
+
+    try{
+
+        const response = await categoryService.createCategory(req.body)
+        return res
+            .status(StatusCodes.CREATED)
+            .json({
+                success: true,
+                error: {},
+                message: ReasonPhrases.CREATED +' Category',
+                data: response
+        })
+
+
+
+    }catch(err){
+        console.log("Category Controller: Something happened", err)
+        return res
+            .status(err.statusCode)
+            .json(errorResponse(err.reason, err))
+    }
+
+}
+
 const getCategories = async(req, res) => {
     try{
 
@@ -46,30 +71,6 @@ const getCategory = async(req, res) => {
             .json(errorResponse(err.reason, err))    }
 }
 
-const createCategory = async(req, res) => {
-
-    try{
-
-        const response = await categoryService.createCategory(req.body)
-        return res
-            .status(StatusCodes.CREATED)
-            .json({
-                success: true,
-                error: {},
-                message: ReasonPhrases.CREATED +' Category',
-                data: response
-        })
-
-
-
-    }catch(err){
-        console.log("Category Controller: Something happened", err)
-        return res
-            .status(err.statusCode)
-            .json(errorResponse(err.reason, err))
-    }
-
-}
 
 const deleteCategory = async(req, res) => {
     try{
