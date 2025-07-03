@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const responseTime = require('response-time')
 const db = require('./config/db_config')
-const {PORT} = require('./config/serverConfig')
+const {PORT, DB_FORCE, DB_ALTER} = require('./config/serverConfig')
 const cors = require('cors')
 
 const ApiRouter = require('./routes/api_router')
@@ -33,7 +33,14 @@ app.use('/api', ApiRouter)
 app.listen(PORT, async() => {
     console.log("Server for shop cart is up")
 
-    await db.sync()
+    if(DB_FORCE == true){
+      await db.sync({force: true})
+    }else if(DB_ALTER == true){
+      await db.sync({alert: true})
+    }else{
+      await db.sync()
+    }
+
     console.log('db connected')
 
     // const res = await Category.create({

@@ -70,7 +70,7 @@ const handleView = async (id) => {
       <ul className="category-list">
         {categories.map((cat) => (
           <li key={cat.id} className="category-item">
-            <strong>{cat.name}</strong> — {cat.description}
+            <strong>{cat.name}</strong>: {cat.description}
             <div className="btn-group">
               <button onClick={() => handleView(cat.id)}>View</button>
               <button onClick={() => handleDelete(cat.id)} className="delete">Delete</button>
