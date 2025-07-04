@@ -1,13 +1,37 @@
-const { where } = require("sequelize");
+const { where, Op } = require("sequelize");
 const Product = require("../models/product");
 
 class ProductRepository{
-    getProducts = async (limit, offset) => {
+    getProducts = async (limit, offset, min_price, max_price, category, search) => {
         try{
+            const filter = {}
+            if(limit){
+                filter.limit = limit
+            }
+            if(offset){
+                filter.offset = offset
+            }
+            const minValue = min_price ? min_price : Number.MIN_SAFE_INTEGER
+            const maxValue = max_price ? max_price : Number.MAX_SAFE_INTEGER
+            
+            const where = {}
+            if(category){
+                where.categoryId = category
+            }
+
+            if(search){
+                where.title = {[Op.like]: `%${search}%`} 
+            }
 
             const response = await Product.findAll({
-                limit,
-                offset
+                where: {
+                    price: {
+                        [Op.between]: [minValue, maxValue]
+                    },
+                    ...where
+                },
+                ...filter,
+                
             })
             return response
 

@@ -18,10 +18,20 @@ class ProductService {
     
     getProducts = async(query) => {
         try{
-            if(isNaN(query.limit) || isNaN(query.offset)){
+            if(query.limit && isNaN(query.limit) || query.offset && isNaN(query.offset)){
                 throw new badRequest("limit, offset", true)
             }
-            const response = await this.repository.getProducts(+query.limit, +query.offset)
+            if(query.min_price && isNaN(query.min_price)){
+                throw new badRequest("min_price", true)
+            }
+
+            if(query.max_price && isNaN(query.max_price)){
+                throw new badRequest("max_price", true)
+            }
+            if(query.category && isNaN(query.category)){
+                throw new badRequest("category", true)
+            }
+            const response = await this.repository.getProducts(+query.limit, +query.offset, +query.min_price, +query.max_price, +query.category, query.search)
             return response        
         }catch(err){
             if(err.name === "BadRequest"){
