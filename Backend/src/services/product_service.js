@@ -31,7 +31,21 @@ class ProductService {
             if(query.category && isNaN(query.category)){
                 throw new badRequest("category", true)
             }
-            const response = await this.repository.getProducts(+query.limit, +query.offset, +query.min_price, +query.max_price, +query.category, query.search)
+
+            let sortBy = query.sort_by
+            let sortOrder = query.sort_order
+
+            const validSortFields = ['title', 'price', 'createdAt']
+            const validSortOrders = ['asc', 'desc']
+
+            if(!validSortFields.includes(sortBy)){
+                sortBy = 'createdAt'
+            }
+            if(!validSortOrders.includes(sortOrder)){
+                sortOrder = 'desc'
+            }
+
+            const response = await this.repository.getProducts(+query.limit, +query.offset, +query.min_price, +query.max_price, +query.category, query.search, sortBy, sortOrder)
             return response        
         }catch(err){
             if(err.name === "BadRequest"){

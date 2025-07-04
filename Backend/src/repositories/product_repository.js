@@ -2,7 +2,7 @@ const { where, Op } = require("sequelize");
 const Product = require("../models/product");
 
 class ProductRepository{
-    getProducts = async (limit, offset, min_price, max_price, category, search) => {
+    getProducts = async (limit, offset, min_price, max_price, category, search, sortBy, sortOrder) => {
         try{
             const filter = {}
             if(limit){
@@ -31,7 +31,7 @@ class ProductRepository{
                     ...where
                 },
                 ...filter,
-                
+                order: [[sortBy, sortOrder]] 
             })
             return response
 
