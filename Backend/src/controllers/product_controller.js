@@ -88,8 +88,8 @@ const deleteProduct = async(req, res) => {
     }catch(err){
         console.log("Product Controller: Something happened", err)
         return res
-            .status(StatusCodes.INTERNAL_SERVER_ERROR)
-            .json(errorResponse(ReasonPhrases.INTERNAL_SERVER_ERROR, err))
+            .status(error.statusCode)
+            .json(errorResponse(err.reason, err))
     }
 }
 

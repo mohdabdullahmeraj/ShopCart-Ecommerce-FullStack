@@ -42,13 +42,20 @@ class ProductService {
         }
     }
 
-    deleteProduct = async(id) => {
-        try{
-            const response = await this.repository.deleteProduct(id)
-            return response
-        }catch(err){
-            console.log("ProductService: ", err)
-            throw new internalServerError
+    deleteProduct = async(productId) => {
+        try {
+            const response = await this.repository.deleteProduct(productId);
+            if(!response) {
+                console.log("ProductService: ", productId, "not found");
+                throw new notFound("Product", "id", productId);
+            }
+            return response;
+        } catch(error) {
+            if(error.name === "NotFoundError") {
+                throw error;
+            }
+            console.log("ProductService: ",error);
+            throw new internalServerError();
         }
     }
 }

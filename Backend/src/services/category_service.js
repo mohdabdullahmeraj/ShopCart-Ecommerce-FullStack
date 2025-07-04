@@ -14,7 +14,7 @@ class CategoryService {
     
         }catch(err){
             console.log("CategoryService: ",err)
-            throw new internalServerError
+            throw new internalServerError()
         }
     }
 
@@ -24,13 +24,13 @@ class CategoryService {
             return response
         }catch(err){
             console.log("CategoryService: ",err)
-            throw new internalServerError
+            throw new internalServerError()
         }
     }
 
-    getCategory = async(id) => {
+    getCategory = async(categoryId) => {
         try{
-            const response = await this.repository.getCategory(id)
+            const response = await this.repository.getCategory(categoryId)
             if(!response) { 
                 console.log("CategoryService: ", categoryId, "not found");
                 throw new notFound("Category", "id", categoryId);
@@ -49,11 +49,18 @@ class CategoryService {
     deleteCategory = async(categoryId) => {
         try{
             const response = await this.repository.deleteCategory(categoryId)
+            if(!response){
+                console.log("CategoryService: ", categoryId, "not found")
+                throw new notFound("Category", "id", categoryId)
+            } 
             return response
 
         }catch(err){
+            if(err.name == "NotFoundError"){
+                throw err
+            }
             console.log("CategoryService: ",err)
-            throw new internalServerError
+            throw new internalServerError()
         }
     }
 
