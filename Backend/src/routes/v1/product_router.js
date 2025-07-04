@@ -1,5 +1,6 @@
 const express = require('express')
-const {createProduct, getProducts, getProduct, deleteProduct} = require('../../controllers/product_controller')
+const { ProductController } = require('../../controllers')
+const {createProduct, getProducts, getProduct, deleteProduct} = ProductController
 
 const {createProductValidator} = require('../../middlewares/product_middlewares')
 const productRouter = express.Router()
