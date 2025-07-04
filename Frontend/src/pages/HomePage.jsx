@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
 export default function HomePage() {
   const [products, setProducts] = useState([])
@@ -12,10 +12,20 @@ export default function HomePage() {
     image: '',
     categoryId: ''
   })
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const limit = parseInt(searchParams.get("limit")) || 10;
+  const offset = parseInt(searchParams.get("offset")) || 0;
+  
 
   const loadProducts = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/v1/products')
+      const res = await axios.get('http://localhost:3000/api/v1/products', {
+        params: {
+          limit, 
+          offset
+        }
+      })
       setProducts(res.data.data || [])
     } catch (err) {
       console.error(err)

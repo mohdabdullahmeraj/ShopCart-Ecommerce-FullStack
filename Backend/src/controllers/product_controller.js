@@ -33,7 +33,7 @@ const createProduct = async(req, res) => {
 const getProducts = async (req, res) =>{
     try{
 
-        const response = await productService.getProducts()
+        const response = await productService.getProducts(req.query)
         return res
             .status(StatusCodes.OK)
             .json({

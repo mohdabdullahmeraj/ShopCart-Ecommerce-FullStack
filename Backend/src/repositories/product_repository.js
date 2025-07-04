@@ -2,10 +2,13 @@ const { where } = require("sequelize");
 const Product = require("../models/product");
 
 class ProductRepository{
-    getProducts = async () => {
+    getProducts = async (limit, offset) => {
         try{
 
-            const response = await Product.findAll()
+            const response = await Product.findAll({
+                limit,
+                offset
+            })
             return response
 
         }catch(err){
