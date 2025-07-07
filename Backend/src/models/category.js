@@ -2,7 +2,7 @@ const Sequelize = require('sequelize')
 const db = require('../config/db_config')
 const Product = require('./product')
 
-const Category = db.define('category',{
+const Category = db.define('Category',{
     name: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -11,6 +11,10 @@ const Category = db.define('category',{
     description: {
         type: Sequelize.STRING,
         allowNull: false,
+    },
+    parentId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,        
     }
 })
 

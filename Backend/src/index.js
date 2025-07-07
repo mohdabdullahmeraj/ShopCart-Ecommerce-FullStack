@@ -33,11 +33,14 @@ app.use('/api', ApiRouter)
 app.listen(PORT, async() => {
     console.log("Server for shop cart is up")
 
-    if(DB_FORCE == true){
+    if(DB_FORCE === "true"){
+      // console.log("FORCE")
       await db.sync({force: true})
-    }else if(DB_ALTER == true){
+    }else if(DB_ALTER === "true"){
+      // console.log("ALTER")
       await db.sync({alter: true})
     }else{
+      // console.log("SYNC")
       await db.sync()
     }
 

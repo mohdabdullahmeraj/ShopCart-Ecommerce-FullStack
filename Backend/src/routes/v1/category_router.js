@@ -1,12 +1,13 @@
 const express = require('express')
 const { createCategoryValidator } = require('../../middlewares/category_middleware')
 const { CategoryController } = require('../../controllers')
-const { createCategory, getCategories, getCategory, deleteCategory, getProductsByCategory } = CategoryController
+const { createCategory, getCategories, getCategory, deleteCategory, getProductsByCategory, getCategoryTree } = CategoryController
 
 const categoryRouter = express.Router()
 
 categoryRouter.get("/", getCategories)
 categoryRouter.post("/",createCategoryValidator, createCategory)
+categoryRouter.get("/tree", getCategoryTree)
 categoryRouter.get("/:id", getCategory)
 categoryRouter.delete("/:id", deleteCategory)
 categoryRouter.get("/:id/products", getProductsByCategory)

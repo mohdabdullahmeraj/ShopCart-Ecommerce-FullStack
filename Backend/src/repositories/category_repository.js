@@ -26,12 +26,13 @@ class CategoryRepository{
         }
     }
 
-    createCategory = async(name, description) => {
+    createCategory = async(name, description, parentId) => {
         try{
 
             const response = await Category.create({
                 name,
-                description
+                description,
+                parentId
             })
             return response
 

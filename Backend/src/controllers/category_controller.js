@@ -116,10 +116,32 @@ const getProductsByCategory = async(req, res) => {
     }
 }
 
+const getCategoryTree = async(req, res) => {
+    try{
+        const response = await categoryService.getCategoryTree()
+        return res  
+            .status(StatusCodes.OK)
+            .json({
+                success: true,
+                error: {},
+                message: "Successfully fetched category tree",
+                data: response
+            })
+    }catch(err){
+        console.log("Category Controller: Something happened", err)
+        console.log("Error name: ", err.name)
+
+        return res
+            .status(err.statusCode)
+            .json(errorResponse(err.reason, err))
+    }
+}
+
 module.exports = {
     getCategories,
     getCategory,
     createCategory,
     deleteCategory,
-    getProductsByCategory
+    getProductsByCategory,
+    getCategoryTree
 }
