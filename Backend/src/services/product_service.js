@@ -8,7 +8,7 @@ class ProductService {
     }
     createProduct = async(product) => {
         try{
-            const response = await this.repository.createProduct(product.title, product.description, product.price, product.categoryId, product.image)
+            const response = await this.repository.createProduct(product.title, product.description, product.price, product.categoryId)
             return response
         }catch(err){
             console.log("ProductService: ", err)
@@ -85,6 +85,41 @@ class ProductService {
             if(error.name === "NotFoundError") {
                 throw error;
             }
+            console.log("ProductService: ",error);
+            throw new internalServerError();
+        }
+    }
+
+    createProductWithImages = async(data) => {
+        try{
+            const {title, description, price, categoryId, images} = data
+
+            const product = await this.repository.createProduct(title, description, price, categoryId)
+            if(images && images.length > 0){
+                let hasMain = false
+
+                for(let img of images){
+                    const isMain = img.isMain === true
+
+                    if(isMain){
+                        if(hasMain){
+                            throw new badRequest('Only one image can be marked as main')
+                        }
+                        hasMain = true
+                    }
+                    await this.repository.addProductImage(product.id, img.imgUrl, isMain);
+                }
+
+                if (!hasMain && images.length > 0) {
+                    await this.repository.addProductImage(product.id, images[0].imgUrl, true);
+                }
+
+                return {
+                    product,
+                    images: await this.repository.getProductImages(product.id)
+                }
+            }
+        }catch(err){
             console.log("ProductService: ",error);
             throw new internalServerError();
         }

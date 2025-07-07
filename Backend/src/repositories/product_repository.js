@@ -1,5 +1,6 @@
 const { where, Op } = require("sequelize");
 const Product = require("../models/product");
+const { ProductImage } = require("../models");
 
 class ProductRepository{
     getProducts = async (limit, offset, min_price, max_price, category, search, sortBy, sortOrder) => {
@@ -30,8 +31,14 @@ class ProductRepository{
                     },
                     ...where
                 },
+                include: [{
+                model: ProductImage,
+                as: 'images',
+                where: { isMain: true },
+                required: false
+  }],
                 ...filter,
-                order: [[sortBy, sortOrder]] 
+                order: [[sortBy, sortOrder]] ,
             })
             return response
 
@@ -44,7 +51,12 @@ class ProductRepository{
     getProduct = async(id) => {
         try{
 
-            const response = await Product.findByPk(id)
+            const response = await Product.findByPk(id, {
+                include: [{
+                    model: ProductImage,
+                    as: 'images'
+                }]
+            })
             return response
 
         }catch(err){
@@ -53,15 +65,14 @@ class ProductRepository{
         }
     }
 
-    createProduct = async(title, description, price,categoryId, image) => {
+    createProduct = async(title, description, price,categoryId) => {
         try{
 
             const response = await Product.create({
                 title,
                 description,
                 price,
-                categoryId,
-                image
+                categoryId
             })
 
             return response
@@ -104,6 +115,53 @@ class ProductRepository{
             throw err
         }
     }
+
+    addProductImage = async(productId, imgUrl, isMain) => {
+        try{
+            const response = await ProductImage.create({
+                productId,
+                imgUrl,
+                isMain
+            })
+
+            return response
+        }catch(err){
+            console.log(err)
+            throw err
+        }
+    }
+
+    getProductImages = async(productId) => {
+        try{
+            const response = await ProductImage.findAll({
+                where: {
+                    productId: productId
+                }
+            })
+            return response
+        }catch(err){
+            console.log(err)
+            throw err
+        }
+    }
+
+    getMainImage = async(productId) => {
+        try{
+            const response = await ProductImage.findOne({
+                where: {
+                    productId: productId,
+                    isMain: true
+                }
+            })
+            return response
+        }catch(err){
+            console.log(err)
+            throw err
+        }
+    }
+
+
+
 }
 
 module.exports = ProductRepository

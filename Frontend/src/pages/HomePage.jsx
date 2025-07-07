@@ -10,9 +10,10 @@ export default function HomePage() {
     title: '',
     description: '',
     price: '',
-    image: '',
-    categoryId: ''
+    categoryId: '',
+    images: [{ imgUrl: '', isMain: true }] 
   })
+
 
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
@@ -41,7 +42,7 @@ export default function HomePage() {
 
   const handleAddProduct = async () => {
     try {
-      await axios.post('http://localhost:3000/api/v1/products', newProduct)
+      await axios.post('http://localhost:3000/api/v1/products/with-images', newProduct)
       setShowAddModal(false)
       setNewProduct({ title: '', description: '', price: '', image: '', categoryId: '' })
       loadProducts()
@@ -86,7 +87,11 @@ export default function HomePage() {
               <h3>{prod.title}</h3>
               <p>{prod.description}</p>
               <p><strong>₹{prod.price}</strong></p>
-              <img src={prod.image} alt={prod.title} />
+              <img
+                src={prod.images?.find(img => img.isMain)?.imgUrl || 'https://via.placeholder.com/150'}
+                alt={prod.title}
+                style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+              />
 
               <div className="actions">
                 <Link to={`/products/${prod.id}`}>View Details</Link>
@@ -120,12 +125,57 @@ export default function HomePage() {
               value={newProduct.price}
               onChange={e => setNewProduct({ ...newProduct, price: e.target.value })}
             />
-            <input
-              type="text"
-              placeholder="Image URL"
-              value={newProduct.image}
-              onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
-            />
+            <label>Images:</label>
+              {newProduct.images.map((img, index) => (
+                <div key={index} style={{ display: 'flex', gap: '10px', marginBottom: '8px', alignItems: 'center' }}>
+                  <input
+                    type="text"
+                    placeholder="Image URL"
+                    value={img.imgUrl}
+                    onChange={e => {
+                      const updated = [...newProduct.images]
+                      updated[index].imgUrl = e.target.value
+                      setNewProduct({ ...newProduct, images: updated })
+                    }}
+                  />
+                  <label>
+                    <input
+                      type="radio"
+                      name="mainImage"
+                      checked={img.isMain}
+                      onChange={() => {
+                        const updated = newProduct.images.map((img, idx) => ({
+                          ...img,
+                          isMain: idx === index
+                        }))
+                        setNewProduct({ ...newProduct, images: updated })
+                      }}
+                    />
+                    Main
+                  </label>
+                  {newProduct.images.length > 1 && (
+                    <button
+                      onClick={() => {
+                        const updated = newProduct.images.filter((_, idx) => idx !== index)
+                        setNewProduct({ ...newProduct, images: updated })
+                      }}
+                    >
+                      ❌
+                    </button>
+                  )}
+                </div>
+              ))}
+              <button
+                onClick={() =>
+                  setNewProduct({
+                    ...newProduct,
+                    images: [...newProduct.images, { imgUrl: '', isMain: false }]
+                  })
+                }
+              >
+                + Add Image
+              </button>
+
             <select
               value={newProduct.categoryId}
               onChange={(e) =>

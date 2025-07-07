@@ -93,9 +93,29 @@ const deleteProduct = async(req, res) => {
     }
 }
 
+const createProductWithImages = async(req, res) => {
+    try{
+        const response = await productService.createProductWithImages(req.body)
+        return res
+            .status(StatusCodes.CREATED)
+            .json({
+                success: true,
+                error: {},
+                message: ReasonPhrases.CREATED + " Product with Images",
+                data: response    
+            })
+    }catch(err){
+        console.log("Product Controller: Something happened", err)
+        return res
+            .status(err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR)
+            .json(errorResponse(err.reason || ReasonPhrases.INTERNAL_SERVER_ERROR, err));
+    }
+}
+
 module.exports = {
     createProduct,
     getProducts,
     getProduct,
-    deleteProduct
+    deleteProduct,
+    createProductWithImages
 }

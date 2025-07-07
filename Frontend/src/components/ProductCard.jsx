@@ -6,7 +6,11 @@ export default function ProductCard({ product }) {
       <h3>{product.title}</h3>
       <p>{product.description}</p>
       <p><strong>₹{product.price}</strong></p>
-      <img src={product.image} alt={product.title} style={{ width: '100px', height: '100px' }} />
+      <img
+  src={product.ProductImages?.[0]?.imgUrl}
+  alt={product.title}
+  style={{ width: '100px', height: '100px' }}
+/>
       <br />
       <Link to={`/products/${product.id}`}>View Details</Link>
     </div>

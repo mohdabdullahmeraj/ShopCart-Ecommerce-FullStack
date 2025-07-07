@@ -7,6 +7,7 @@ const cors = require('cors')
 
 const ApiRouter = require('./routes/api_router')
 
+const Models = require('./models/index')
 const Category = require('./models/category')
 
 const app = express()

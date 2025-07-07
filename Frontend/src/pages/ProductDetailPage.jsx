@@ -18,7 +18,17 @@ export default function ProductDetailPage() {
   return (
     <div className="container">
       <h1>{product.title}</h1>
-      <img src={product.image} alt={product.title} style={{ width: '150px' }} />
+      <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+        {product.images?.map((img, idx) => (
+          <img
+            key={idx}
+            src={img.imgUrl}
+            alt={`Image ${idx}`}
+            style={{ width: '120px', height: '120px', objectFit: 'cover' }}
+          />
+        ))}
+      </div>
+
       <p>{product.description}</p>
       <p><strong>Price: ₹{product.price}</strong></p>
       <p>Category ID: {product.categoryId}</p>
