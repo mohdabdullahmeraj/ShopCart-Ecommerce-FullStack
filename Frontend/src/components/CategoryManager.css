@@ -2,7 +2,7 @@ body {
   background-color: #1e1e1e;
   margin: 0;
   padding: 0;
-  color: #333; /* default text color */
+  color: #333; 
 }
 
 .wrapper {
@@ -42,8 +42,8 @@ h2, h3 {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  background-color: #fff;      /* white input */
-  color: #333;                 /* dark text */
+  background-color: #fff;      
+  color: #333;                
 }
 
 .form button {

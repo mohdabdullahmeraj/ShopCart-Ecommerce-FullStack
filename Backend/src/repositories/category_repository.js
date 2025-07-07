@@ -58,6 +58,16 @@ class CategoryRepository{
             throw err
         }
     }
+
+    getCategoriesWithChildren = async() => {
+        try{
+            const response = await Category.findAll({include: ['children']})
+            return response
+        }catch(err){
+            console.log(err)
+            throw err
+        }
+    }
     
 }
 

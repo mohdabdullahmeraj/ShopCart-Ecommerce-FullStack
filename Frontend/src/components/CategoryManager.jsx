@@ -11,7 +11,7 @@ function CategoryManager() {
 
   const fetchCategories = async () => {
     const res = await api.get('/categories')
-    setCategories(res.data.data) // ✅ this is the actual array
+    setCategories(res.data.data) 
   }
 
   const handleAdd = async (e) => {
@@ -34,7 +34,7 @@ function CategoryManager() {
 
 const handleView = async (id) => {
   const res = await api.get(`/categories/${id}`)
-  setSelectedCategory(res.data.data) // ✅ not res.data directly
+  setSelectedCategory(res.data.data) 
 }
 
 
@@ -47,7 +47,7 @@ const handleView = async (id) => {
             <div className="container">
       <h2>Category Manager</h2>
 
-      {/* Add Category Form */}
+      
       <form onSubmit={handleAdd} className="form">
         <input
           placeholder="Name"
@@ -65,7 +65,7 @@ const handleView = async (id) => {
       </form>
       {message && <p className="message">{message}</p>}
 
-      {/* All Categories */}
+      
       <h3>All Categories</h3>
       <ul className="category-list">
         {categories.map((cat) => (
@@ -79,7 +79,7 @@ const handleView = async (id) => {
         ))}
       </ul>
 
-      {/* View Single Category */}
+      
       {selectedCategory && (
         <div className="selected-category">
           <h4>Selected Category</h4>

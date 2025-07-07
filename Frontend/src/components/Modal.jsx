@@ -1,4 +1,3 @@
-// src/components/Modal.jsx
 
 export default function Modal({ isOpen, title, onClose, children }) {
   if (!isOpen) return null

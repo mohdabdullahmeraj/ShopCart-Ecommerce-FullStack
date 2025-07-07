@@ -128,6 +128,19 @@ class CategoryService {
             throw new internalServerError()
         }
     }
+
+    getLeftCategories = async() => {
+        try{
+            const categories = await this.repository.getCategoriesWithChildren()
+            const leafCategories = categories
+                .filter(cat => !cat.children || cat.children.length === 0)
+                .map(cat => ({ id: cat.id, name: cat.name }));
+            return leafCategories;
+        }catch(err){
+            console.log("CategoryService: ", err)
+            throw new internalServerError()            
+        }
+    }
 }
 
 

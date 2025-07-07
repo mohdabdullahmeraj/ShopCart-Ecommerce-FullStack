@@ -18,4 +18,14 @@ const Category = db.define('Category',{
     }
 })
 
+Category.hasMany(Category, {
+    as: 'children',
+    foreignKey: 'parentId',
+});
+
+Category.belongsTo(Category, {
+    as: 'parent',
+    foreignKey: 'parentId',
+});
+
 module.exports = Category

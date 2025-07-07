@@ -137,11 +137,32 @@ const getCategoryTree = async(req, res) => {
     }
 }
 
+const getLeafCategories = async(req, res) => {
+    try{
+
+        const response = await categoryService.getLeftCategories()
+        return res
+        .status(StatusCodes.OK)
+        .json({
+            success: true,
+            error: {},
+            message: "Successfully fetched leaf categories",
+            data: response
+        })
+    }catch(err){
+        console.log("Category Controller: Something happened", err);
+        return res
+            .status(StatusCodes.INTERNAL_SERVER_ERROR)
+            .json(errorResponse(ReasonPhrases.INTERNAL_SERVER_ERROR, err));
+    }
+}
+
 module.exports = {
     getCategories,
     getCategory,
     createCategory,
     deleteCategory,
     getProductsByCategory,
-    getCategoryTree
+    getCategoryTree,
+    getLeafCategories
 }
