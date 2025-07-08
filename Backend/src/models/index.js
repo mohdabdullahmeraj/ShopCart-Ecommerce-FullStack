@@ -1,3 +1,4 @@
+const Admin = require('./admin')
 const Category = require('./category')
 const Product = require('./product')
 const ProductImage = require('./productImage')
@@ -14,5 +15,6 @@ ProductImage.belongsTo(Product, {foreignKey: 'productId'})
 module.exports = {
     Category,
     Product,
-    ProductImage
+    ProductImage,
+    Admin
 }

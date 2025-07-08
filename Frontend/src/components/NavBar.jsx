@@ -1,15 +1,28 @@
-import { Link } from 'react-router-dom'
+import { useNavigate, Link  } from 'react-router-dom'
+import api from '../services/api' 
 
-export default function Navbar() {
+function Navbar() {
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    try {
+      await api.post('/admin/logout')
+      navigate('/admin/login')  
+    } catch (err) {
+      console.error("Logout failed", err)
+    }
+  }
+
   return (
     <nav className="navbar">
-      <div className="navbar__container">
-        <h1 className="navbar__logo">🛒 ShopCart</h1>
-        <div className="navbar__links">
-          <Link to="/">Products</Link>
-          <Link to="/categories">Categories</Link>
-        </div>
+      <h1>ShopCart</h1>
+      <div className="nav-links">
+        <Link to="/">Products</Link>
+        <Link to="/categories">Categories</Link>
+        <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
     </nav>
   )
 }
+
+export default Navbar
