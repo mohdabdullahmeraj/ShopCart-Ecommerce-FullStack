@@ -6,6 +6,7 @@ import CategoryProductsPage from './pages/CategoryProductsPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import AdminSignup from './pages/AdminSignup';
 import AdminLogin from './pages/AdminLogin';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   const location = useLocation();
@@ -18,10 +19,10 @@ function App() {
         <Route path="/" element={<AdminLogin />} />
         <Route path="/admin/signup" element={<AdminSignup />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/categories" element={<CategoryPage />} />
-        <Route path="/categories/:id/products" element={<CategoryProductsPage />} />
-        <Route path="/products/:id" element={<ProductDetailPage />} />
+        <Route path="/home" element={<ProtectedRoute> <HomePage /> </ProtectedRoute>} />
+        <Route path="/categories" element={<ProtectedRoute> <CategoryPage /> </ProtectedRoute>} />
+        <Route path="/categories/:id/products" element={<ProtectedRoute> <CategoryProductsPage /> </ProtectedRoute>} />
+        <Route path="/products/:id" element={<ProtectedRoute> <ProductDetailPage /> </ProtectedRoute>} />
       </Routes>
     </div>
   );
