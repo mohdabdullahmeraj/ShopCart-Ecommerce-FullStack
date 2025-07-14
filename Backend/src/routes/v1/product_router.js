@@ -3,13 +3,14 @@ const { ProductController } = require('../../controllers')
 const {createProduct, getProducts, getProduct, deleteProduct, createProductWithImages, addReview} = ProductController
 
 const {createProductValidator} = require('../../middlewares/product_middlewares')
+const { verifyToken } = require('../../middlewares/auth_middleware')
 const productRouter = express.Router()
 
-productRouter.post('/', createProductValidator, createProduct)
-productRouter.post("/with-images", createProductWithImages);
+productRouter.post('/', createProductValidator, verifyToken, createProduct)
+productRouter.post("/with-images", verifyToken, createProductWithImages);
 productRouter.get('/', getProducts)
 productRouter.get('/:id', getProduct)
-productRouter.delete('/:id', deleteProduct)
+productRouter.delete('/:id', verifyToken, deleteProduct)
 productRouter.post('/:id/reviews', addReview)
 
 

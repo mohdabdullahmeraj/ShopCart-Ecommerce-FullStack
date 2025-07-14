@@ -41,7 +41,9 @@ const loginAdmin = async(req, res) => {
                 success: true,
                 error: {},
                 message: "Succesfully logged in",
-                data: admin
+                data: {token,
+                    ...admin
+                }
             })
 
 

@@ -75,15 +75,25 @@ class CategoryService {
 
     deleteCategory = async(categoryId) => {
         try{
-            const response = await this.repository.deleteCategory(categoryId)
-            if(!response){
-                console.log("CategoryService: ", categoryId, "not found")
-                throw new notFound("Category", "id", categoryId)
-            } 
-            return response
+            const category = await this.repository.getCategory(categoryId);
+            if (!category) {
+                console.log("CategoryService: ", categoryId, "not found");
+                throw new notFound("Category", "id", categoryId);
+            }
+
+            const products = await this.productRepository.getProductsByCategory(categoryId);
+            if (products.length > 0) {
+                console.log(`CategoryService: Category ${categoryId} has linked products.`);
+                throw new badRequest("Cannot delete category with existing products");
+            }
+            const response = await this.repository.deleteCategory(categoryId);
+            return response;
 
         }catch(err){
             if(err.name == "NotFoundError"){
+                throw err
+            }
+            if(err.name == "BadRequestError"){
                 throw err
             }
             console.log("CategoryService: ",err)

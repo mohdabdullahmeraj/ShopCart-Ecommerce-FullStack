@@ -24,7 +24,6 @@ export default function ProductDetailPage() {
 
     api.post(`/products/${id}/reviews`, reviewData)
       .then(() => {
-        // Reload product data to include new review
         return api.get(`/products/${id}`)
       })
       .then(res => {
@@ -42,7 +41,6 @@ export default function ProductDetailPage() {
   <div className="product-detail container">
     <h1 className="product-title">{product.title}</h1>
 
-    {/* Image Gallery */}
     <div className="image-gallery">
       <div className="main-image-wrapper">
         <img
@@ -64,14 +62,12 @@ export default function ProductDetailPage() {
       </div>
     </div>
 
-    {/* Product Info */}
     <div className="product-info">
       <p className="product-desc">{product.description}</p>
       <p className="product-price"><strong>Price:</strong> ₹{product.price}</p>
       <p className="product-category"><strong>Category ID:</strong> {product.categoryId}</p>
     </div>
 
-    {/* Reviews */}
     <div className="reviews-section">
       <h3>Customer Reviews</h3>
       {product.reviews?.length ? (
@@ -87,7 +83,6 @@ export default function ProductDetailPage() {
       <button className="primary-btn" onClick={() => setShowReviewForm(true)}>Add Review</button>
     </div>
 
-    {/* Add Review Modal */}
     {showReviewForm && (
       <div className="modal-overlay">
         <div className="modal-box">
