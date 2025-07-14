@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate,   Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from '../services/api'
 import axios from 'axios'
 
@@ -15,12 +15,20 @@ export default function AdminSignup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.post("/admin/signup", formData);
-      navigate("/home");
+      const res = await api.post("/admin/signup", formData);
+      const token = res?.data?.data?.token;
+
+      if (token) {
+        localStorage.setItem("token", token);
+        navigate("/home");
+      } else {
+        setError("Signup successful but no token received");
+      }
     } catch (err) {
       setError(err?.response?.data?.message || "Signup failed");
     }
   };
+
 
   return (
     <div className="auth-wrapper" id="signup-wrapper">

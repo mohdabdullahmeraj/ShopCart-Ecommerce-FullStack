@@ -13,14 +13,18 @@ export default function AdminLogin() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await api.post("/admin/login", formData);
-      navigate("/home");
-    } catch (err) {
-      setError(err?.response?.data?.message || "Login failed");
-    }
-  };
+  e.preventDefault();
+  try {
+    const res = await api.post("/admin/login", formData);
+    const token = res?.data?.data?.token;
+    localStorage.setItem("token", token); 
+
+    navigate("/home");
+  } catch (err) {
+    setError(err?.response?.data?.message || "Login failed");
+  }
+};
+
 
   return (
     <div className="auth-wrapper" id="login-wrapper">

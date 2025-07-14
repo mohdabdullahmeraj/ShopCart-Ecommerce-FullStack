@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import { getUserRole } from '../utils/auth';
+
 
 export default function CategoryPage() {
   const [categoryTree, setCategoryTree] = useState([])
   const [showAddModal, setShowAddModal] = useState(false)
   const [newCategory, setNewCategory] = useState({ name: '', description: '', parentId: null })
   const [parentOptions, setParentOptions] = useState([])
+
+  const role = getUserRole(); 
+  const isAdmin = role === 'admin';
 
   const loadTree = async () => {
     try {
@@ -65,7 +70,7 @@ export default function CategoryPage() {
         )}
 
         <div className="btn-group">
-  <button onClick={() => handleDelete(cat.id)} className="delete-btn">Delete</button>
+  {isAdmin && (<button onClick={() => handleDelete(cat.id)} className="delete-btn">Delete</button>)}
   {cat.children.length > 0 && (
     <button
       onClick={() => setShowChildren(!showChildren)}
@@ -91,7 +96,7 @@ export default function CategoryPage() {
     <div className="category-page">
       <div className="header">
         <h2>All Categories (Tree View)</h2>
-        <button
+        {isAdmin && (<button
           className="add-btn"
           onClick={async () => {
             const res = await axios.get('http://localhost:3000/api/v1/categories/tree')
@@ -100,7 +105,7 @@ export default function CategoryPage() {
           }}
         >
           Add Category
-        </button>
+        </button>)}
       </div>
 
       <div className="category-list">

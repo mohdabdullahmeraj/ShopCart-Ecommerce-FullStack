@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Link, useLocation } from 'react-router-dom'
+import { getUserRole } from '../utils/auth';
 
 export default function HomePage() {
   const [products, setProducts] = useState([])
@@ -14,6 +15,8 @@ export default function HomePage() {
     images: [{ imgUrl: '', isMain: true }] 
   })
 
+  const role = getUserRole(); 
+  const isAdmin = role === 'admin';
 
   const location = useLocation()
   const searchParams = new URLSearchParams(location.search)
@@ -70,15 +73,11 @@ export default function HomePage() {
       <div className="homepagebox">
         <div className="header">
           <h2>All Products</h2>
-          <button
-            className="add-btn"
-            onClick={() => {
-              fetchLeafCategories()
-              setShowAddModal(true)
-            }}
-          >
+          {isAdmin && (
+          <button className="add-btn" onClick={() => { fetchLeafCategories(); setShowAddModal(true); }}>
             Add Product
           </button>
+        )}
         </div>
 
         <div className="product-list">
@@ -97,7 +96,7 @@ export default function HomePage() {
                 <Link to={`/products/${prod.id}`}>View Details</Link>
               </div>
 
-              <button onClick={() => handleDelete(prod.id)} className="delete-btn">Delete</button>
+              {isAdmin && <button onClick={() => handleDelete(prod.id)}>Delete</button>}
             </div>
           ))}
         </div>
