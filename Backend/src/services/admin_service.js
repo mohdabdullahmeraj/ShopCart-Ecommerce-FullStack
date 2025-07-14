@@ -20,7 +20,7 @@ class AdminService{
 
             const newAdmin = await this.repository.createAdmin(admin.name, admin.email, admin.password)
 
-            const token = jwt.sign({id: newAdmin.id},JWT_SECRET)  
+            const token = jwt.sign({id: newAdmin.id, role: 'admin'},JWT_SECRET)  
             return {token, admin: newAdmin}
 
         }catch(err){
@@ -42,7 +42,7 @@ class AdminService{
                 throw new badRequest("Email or password is incorrect")
             }
 
-            const token = jwt.sign({id: existingAdmin.id}, JWT_SECRET)
+            const token = jwt.sign({id: existingAdmin.id, role: 'admin'}, JWT_SECRET)
 
             const { password, ...safeAdmin } = existingAdmin.dataValues;
             return { token, admin: safeAdmin };

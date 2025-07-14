@@ -20,7 +20,7 @@ class UserService{
 
             const newUser = await this.repository.createUser(user.name, user.email, user.password)
 
-            const token = jwt.sign({id: newUser.id},JWT_SECRET)  
+            const token = jwt.sign({id: newUser.id, role: 'user'},JWT_SECRET)  
             return {token, user: newUser}
 
         }catch(err){
@@ -42,7 +42,7 @@ class UserService{
                 throw new badRequest("Email or password is incorrect")
             }
 
-            const token = jwt.sign({id: existingUser.id}, JWT_SECRET)
+            const token = jwt.sign({id: existingUser.id, role: 'user'}, JWT_SECRET)
 
             const { password, ...safeUser } = existingUser.dataValues;
             return { token, user: safeUser };
