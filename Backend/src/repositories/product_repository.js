@@ -1,6 +1,6 @@
 const { where, Op } = require("sequelize");
 const Product = require("../models/product");
-const { ProductImage } = require("../models");
+const { ProductImage, Review } = require("../models");
 
 class ProductRepository{
     getProducts = async (limit, offset, min_price, max_price, category, search, sortBy, sortOrder) => {
@@ -52,10 +52,9 @@ class ProductRepository{
         try{
 
             const response = await Product.findByPk(id, {
-                include: [{
-                    model: ProductImage,
-                    as: 'images'
-                }]
+                include: [
+                    { model: ProductImage, as: 'images'},
+                    { model: Review, as: 'reviews' }]
             })
             return response
 
@@ -160,7 +159,15 @@ class ProductRepository{
         }
     }
 
-
+    addReview = async (productId, user, comment) => {
+        try {
+            const response = await Review.create({ productId, user, comment })
+            return response
+        } catch (err) {
+            console.log(err)
+            throw err
+        }
+    }
 
 }
 

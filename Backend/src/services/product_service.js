@@ -124,6 +124,17 @@ class ProductService {
             throw new internalServerError();
         }
     }
+
+    addReview = async(productId, user, comment) => {
+        try {
+                const review = await this.repository.addReview(productId, user, comment)
+                return review
+            } catch(err) {
+                console.log("ProductService: ", err)
+                throw new internalServerError()
+            }
+        }
+    
 }
 
 

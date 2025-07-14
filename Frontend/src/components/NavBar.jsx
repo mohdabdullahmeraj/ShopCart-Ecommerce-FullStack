@@ -17,7 +17,7 @@ function Navbar() {
     <nav className="navbar">
       <h1>ShopCart</h1>
       <div className="nav-links">
-        <Link to="/">Products</Link>
+        <Link to="/home">Products</Link>
         <Link to="/categories">Categories</Link>
         <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>

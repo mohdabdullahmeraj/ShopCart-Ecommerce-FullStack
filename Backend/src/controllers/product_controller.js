@@ -112,10 +112,31 @@ const createProductWithImages = async(req, res) => {
     }
 }
 
+const addReview = async (req, res) => {
+  try {
+    const { user, comment } = req.body
+    const { id: productId } = req.params
+    const response = await productService.addReview(productId, user, comment)
+
+    return res.status(StatusCodes.CREATED).json({
+      success: true,
+      error: {},
+      message: "Review added",
+      data: response
+    })
+
+  } catch (err) {
+    console.log("Product Controller: Something happened", err)
+    return res.status(err.statusCode).json(errorResponse(err.reason, err))
+  }
+}
+
+
 module.exports = {
     createProduct,
     getProducts,
     getProduct,
     deleteProduct,
-    createProductWithImages
+    createProductWithImages,
+    addReview
 }

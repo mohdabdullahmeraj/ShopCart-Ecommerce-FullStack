@@ -2,6 +2,7 @@ const Admin = require('./admin')
 const Category = require('./category')
 const Product = require('./product')
 const ProductImage = require('./productImage')
+const Review = require('./review')
 
 Category.hasMany(Product, {foreignKey: 'categoryId'})
 Product.belongsTo(Category, {foreignKey: 'categoryId'})
@@ -12,9 +13,14 @@ Product.belongsTo(Category, {foreignKey: 'categoryId'})
 Product.hasMany(ProductImage, {foreignKey: 'productId', as: 'images'})
 ProductImage.belongsTo(Product, {foreignKey: 'productId'})
 
+Product.hasMany(Review, { foreignKey: 'productId', as: 'reviews' })
+Review.belongsTo(Product, { foreignKey: 'productId' })
+
+
 module.exports = {
     Category,
     Product,
     ProductImage,
-    Admin
+    Admin,
+    Review
 }
