@@ -1,72 +1,94 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import { Link, useLocation } from 'react-router-dom'
-import { getUserRole } from '../utils/auth';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link, useLocation } from "react-router-dom";
+import { getUserRole } from "../utils/auth";
 
 export default function HomePage() {
-  const [products, setProducts] = useState([])
-  const [categoryOptions, setCategoryOptions] = useState([])
-  const [showAddModal, setShowAddModal] = useState(false)
+  const [products, setProducts] = useState([]);
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [newProduct, setNewProduct] = useState({
-    title: '',
-    description: '',
-    price: '',
-    categoryId: '',
-    images: [{ imgUrl: '', isMain: true }] 
-  })
+    title: "",
+    description: "",
+    price: "",
+    categoryId: "",
+    images: [{ imgUrl: "", isMain: true }],
+  });
 
-  const role = getUserRole(); 
-  const isAdmin = role === 'admin';
+  const role = getUserRole();
+  const isAdmin = role === "admin";
 
-  const location = useLocation()
-  const searchParams = new URLSearchParams(location.search)
-  const limit = parseInt(searchParams.get('limit')) || 10
-  const offset = parseInt(searchParams.get('offset')) || 0
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const limit = parseInt(searchParams.get("limit")) || 10;
+  const offset = parseInt(searchParams.get("offset")) || 0;
 
   const loadProducts = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/v1/products', {
-        params: { limit, offset }
-      })
-      setProducts(res.data.data || [])
+      const res = await axios.get("http://localhost:3000/api/v1/products", {
+        params: { limit, offset },
+      });
+      setProducts(res.data.data || []);
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   const fetchLeafCategories = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/v1/categories/leaf')
-      setCategoryOptions(res.data.data || [])
+      const res = await axios.get(
+        "http://localhost:3000/api/v1/categories/leaf"
+      );
+      setCategoryOptions(res.data.data || []);
     } catch (err) {
-      console.error('Failed to load categories', err)
+      console.error("Failed to load categories", err);
     }
-  }
+  };
 
   const handleAddProduct = async () => {
     try {
-      await axios.post('http://localhost:3000/api/v1/products/with-images', newProduct)
-      setShowAddModal(false)
-      setNewProduct({ title: '', description: '', price: '', image: '', categoryId: '' })
-      loadProducts()
+      const token = localStorage.getItem("token"); // Or wherever you're storing your JWT
+      await axios.post(
+        "http://localhost:3000/api/v1/products/with-images",
+        newProduct,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setShowAddModal(false);
+      setNewProduct({
+        title: "",
+        description: "",
+        price: "",
+        categoryId: "",
+        images: [{ imgUrl: "", isMain: true }],
+      });
+      loadProducts();
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this product?')) return
+    if (!window.confirm("Delete this product?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/v1/products/${id}`)
-      loadProducts()
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:3000/api/v1/products/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      loadProducts();
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   useEffect(() => {
-    loadProducts()
-  }, [])
+    loadProducts();
+  }, []);
 
   return (
     <div className="homepage">
@@ -74,10 +96,16 @@ export default function HomePage() {
         <div className="header">
           <h2>All Products</h2>
           {isAdmin && (
-          <button className="add-btn" onClick={() => { fetchLeafCategories(); setShowAddModal(true); }}>
-            Add Product
-          </button>
-        )}
+            <button
+              className="add-btn"
+              onClick={() => {
+                fetchLeafCategories();
+                setShowAddModal(true);
+              }}
+            >
+              Add Product
+            </button>
+          )}
         </div>
 
         <div className="product-list">
@@ -85,18 +113,25 @@ export default function HomePage() {
             <div key={prod.id} className="product-card">
               <h3>{prod.title}</h3>
               <p>{prod.description}</p>
-              <p><strong>₹{prod.price}</strong></p>
+              <p className="price-badge">
+                <strong>₹{prod.price}</strong>
+              </p>
               <img
-                src={prod.images?.find(img => img.isMain)?.imgUrl || 'https://via.placeholder.com/150'}
+                src={
+                  prod.images?.find((img) => img.isMain)?.imgUrl ||
+                  "https://via.placeholder.com/150"
+                }
                 alt={prod.title}
-                style={{ width: '150px', height: '150px', objectFit: 'cover' }}
+                style={{ width: "150px", height: "150px", objectFit: "cover" }}
               />
 
               <div className="actions">
                 <Link to={`/products/${prod.id}`}>View Details</Link>
               </div>
 
-              {isAdmin && <button onClick={() => handleDelete(prod.id)}>Delete</button>}
+              {isAdmin && (
+                <button onClick={() => handleDelete(prod.id)}>Delete</button>
+              )}
             </div>
           ))}
         </div>
@@ -110,70 +145,86 @@ export default function HomePage() {
               type="text"
               placeholder="Title"
               value={newProduct.title}
-              onChange={e => setNewProduct({ ...newProduct, title: e.target.value })}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, title: e.target.value })
+              }
             />
             <input
               type="text"
               placeholder="Description"
               value={newProduct.description}
-              onChange={e => setNewProduct({ ...newProduct, description: e.target.value })}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, description: e.target.value })
+              }
             />
             <input
               type="number"
               placeholder="Price"
               value={newProduct.price}
-              onChange={e => setNewProduct({ ...newProduct, price: e.target.value })}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, price: e.target.value })
+              }
             />
             <label>Images:</label>
-              {newProduct.images.map((img, index) => (
-                <div key={index} style={{ display: 'flex', gap: '10px', marginBottom: '8px', alignItems: 'center' }}>
+            {newProduct.images.map((img, index) => (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  marginBottom: "8px",
+                  alignItems: "center",
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder="Image URL"
+                  value={img.imgUrl}
+                  onChange={(e) => {
+                    const updated = [...newProduct.images];
+                    updated[index].imgUrl = e.target.value;
+                    setNewProduct({ ...newProduct, images: updated });
+                  }}
+                />
+                <label>
                   <input
-                    type="text"
-                    placeholder="Image URL"
-                    value={img.imgUrl}
-                    onChange={e => {
-                      const updated = [...newProduct.images]
-                      updated[index].imgUrl = e.target.value
-                      setNewProduct({ ...newProduct, images: updated })
+                    type="radio"
+                    name="mainImage"
+                    checked={img.isMain}
+                    onChange={() => {
+                      const updated = newProduct.images.map((img, idx) => ({
+                        ...img,
+                        isMain: idx === index,
+                      }));
+                      setNewProduct({ ...newProduct, images: updated });
                     }}
                   />
-                  <label>
-                    <input
-                      type="radio"
-                      name="mainImage"
-                      checked={img.isMain}
-                      onChange={() => {
-                        const updated = newProduct.images.map((img, idx) => ({
-                          ...img,
-                          isMain: idx === index
-                        }))
-                        setNewProduct({ ...newProduct, images: updated })
-                      }}
-                    />
-                    Main
-                  </label>
-                  {newProduct.images.length > 1 && (
-                    <button
-                      onClick={() => {
-                        const updated = newProduct.images.filter((_, idx) => idx !== index)
-                        setNewProduct({ ...newProduct, images: updated })
-                      }}
-                    >
-                      ❌
-                    </button>
-                  )}
-                </div>
-              ))}
-              <button
-                onClick={() =>
-                  setNewProduct({
-                    ...newProduct,
-                    images: [...newProduct.images, { imgUrl: '', isMain: false }]
-                  })
-                }
-              >
-                + Add Image
-              </button>
+                  Main
+                </label>
+                {newProduct.images.length > 1 && (
+                  <button
+                    onClick={() => {
+                      const updated = newProduct.images.filter(
+                        (_, idx) => idx !== index
+                      );
+                      setNewProduct({ ...newProduct, images: updated });
+                    }}
+                  >
+                    ❌
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              onClick={() =>
+                setNewProduct({
+                  ...newProduct,
+                  images: [...newProduct.images, { imgUrl: "", isMain: false }],
+                })
+              }
+            >
+              + Add Image
+            </button>
 
             <select
               value={newProduct.categoryId}
@@ -197,5 +248,5 @@ export default function HomePage() {
         </div>
       )}
     </div>
-  )
+  );
 }

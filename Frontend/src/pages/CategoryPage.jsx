@@ -1,64 +1,86 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
-import { Link } from 'react-router-dom'
-import { getUserRole } from '../utils/auth';
-
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import { getUserRole } from "../utils/auth";
 
 export default function CategoryPage() {
-  const [categoryTree, setCategoryTree] = useState([])
-  const [showAddModal, setShowAddModal] = useState(false)
-  const [newCategory, setNewCategory] = useState({ name: '', description: '', parentId: null })
-  const [parentOptions, setParentOptions] = useState([])
+  const [categoryTree, setCategoryTree] = useState([]);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newCategory, setNewCategory] = useState({
+    name: "",
+    description: "",
+    parentId: null,
+  });
+  const [parentOptions, setParentOptions] = useState([]);
 
-  const role = getUserRole(); 
-  const isAdmin = role === 'admin';
+  const role = getUserRole();
+  const isAdmin = role === "admin";
 
   const loadTree = async () => {
     try {
-      const res = await axios.get('http://localhost:3000/api/v1/categories/tree')
-      setCategoryTree(res.data.data || [])
+      const res = await axios.get(
+        "http://localhost:3000/api/v1/categories/tree"
+      );
+      setCategoryTree(res.data.data || []);
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   const handleAddCategory = async () => {
     try {
-      await axios.post('http://localhost:3000/api/v1/categories', newCategory)
-      setShowAddModal(false)
-      setNewCategory({ name: '', description: '', parentId: null })
-      loadTree()
+      const token = localStorage.getItem("token");
+      await axios.post("http://localhost:3000/api/v1/categories", newCategory, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setShowAddModal(false);
+      setNewCategory({ name: "", description: "", parentId: null });
+      loadTree();
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this category?')) return
+    if (!window.confirm("Delete this category?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/v1/categories/${id}`)
-      loadTree()
+      const token = localStorage.getItem("token");
+      await axios.delete(`http://localhost:3000/api/v1/categories/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      loadTree();
     } catch (err) {
-      console.error(err)
+      console.error(err);
     }
-  }
+  };
 
-  const flattenCategoryTree = (tree, prefix = '') => {
-    let flat = []
+  const flattenCategoryTree = (tree, prefix = "") => {
+    let flat = [];
     for (let cat of tree) {
-      flat.push({ id: cat.id, label: prefix + cat.name })
+      flat.push({ id: cat.id, label: prefix + cat.name });
       if (cat.children && cat.children.length > 0) {
-        flat = flat.concat(flattenCategoryTree(cat.children, prefix + '— '))
+        flat = flat.concat(flattenCategoryTree(cat.children, prefix + "— "));
       }
     }
-    return flat
-  }
+    return flat;
+  };
 
   const CategoryNode = ({ cat }) => {
-    const [showChildren, setShowChildren] = useState(false)
+    const [showChildren, setShowChildren] = useState(false);
 
     return (
-      <div className="category-node" style={{ marginLeft: '1rem', borderLeft: '1px solid #ddd', paddingLeft: '1rem' }}>
+      <div
+        className="category-node"
+        style={{
+          marginLeft: "1rem",
+          borderLeft: "1px solid #ddd",
+          paddingLeft: "1rem",
+        }}
+      >
         <div>
           <strong>{cat.name}</strong> - {cat.description}
         </div>
@@ -70,46 +92,55 @@ export default function CategoryPage() {
         )}
 
         <div className="btn-group">
-  {isAdmin && (<button onClick={() => handleDelete(cat.id)} className="delete-btn">Delete</button>)}
-  {cat.children.length > 0 && (
-    <button
-      onClick={() => setShowChildren(!showChildren)}
-      className="toggle-btn"
-    >
-      {showChildren ? 'Hide Subcategories' : 'Show Subcategories'}
-    </button>
-  )}
-</div>
+          {isAdmin && (
+            <button onClick={() => handleDelete(cat.id)} className="delete-btn">
+              Delete
+            </button>
+          )}
+          {cat.children.length > 0 && (
+            <button
+              onClick={() => setShowChildren(!showChildren)}
+              className="toggle-btn"
+            >
+              {showChildren ? "Hide Subcategories" : "Show Subcategories"}
+            </button>
+          )}
+        </div>
 
-        {showChildren && cat.children.map(child => (
-          <CategoryNode key={child.id} cat={child} />
-        ))}
+        {showChildren &&
+          cat.children.map((child) => (
+            <CategoryNode key={child.id} cat={child} />
+          ))}
       </div>
-    )
-  }
+    );
+  };
 
   useEffect(() => {
-    loadTree()
-  }, [])
+    loadTree();
+  }, []);
 
   return (
     <div className="category-page">
       <div className="header">
         <h2>All Categories (Tree View)</h2>
-        {isAdmin && (<button
-          className="add-btn"
-          onClick={async () => {
-            const res = await axios.get('http://localhost:3000/api/v1/categories/tree')
-            setParentOptions(res.data.data || [])
-            setShowAddModal(true)
-          }}
-        >
-          Add Category
-        </button>)}
+        {isAdmin && (
+          <button
+            className="add-btn"
+            onClick={async () => {
+              const res = await axios.get(
+                "http://localhost:3000/api/v1/categories/tree"
+              );
+              setParentOptions(res.data.data || []);
+              setShowAddModal(true);
+            }}
+          >
+            Add Category
+          </button>
+        )}
       </div>
 
       <div className="category-list">
-        {categoryTree.map(cat => (
+        {categoryTree.map((cat) => (
           <CategoryNode key={cat.id} cat={cat} />
         ))}
       </div>
@@ -122,26 +153,31 @@ export default function CategoryPage() {
               type="text"
               placeholder="Name"
               value={newCategory.name}
-              onChange={e => setNewCategory({ ...newCategory, name: e.target.value })}
+              onChange={(e) =>
+                setNewCategory({ ...newCategory, name: e.target.value })
+              }
             />
             <input
               type="text"
               placeholder="Description"
               value={newCategory.description}
-              onChange={e => setNewCategory({ ...newCategory, description: e.target.value })}
+              onChange={(e) =>
+                setNewCategory({ ...newCategory, description: e.target.value })
+              }
             />
 
             <select
-              value={newCategory.parentId || ''}
-              onChange={e =>
+              value={newCategory.parentId || ""}
+              onChange={(e) =>
                 setNewCategory({
                   ...newCategory,
-                  parentId: e.target.value === '' ? null : parseInt(e.target.value)
+                  parentId:
+                    e.target.value === "" ? null : parseInt(e.target.value),
                 })
               }
             >
               <option value="">No Parent (Root Category)</option>
-              {flattenCategoryTree(parentOptions).map(option => (
+              {flattenCategoryTree(parentOptions).map((option) => (
                 <option key={option.id} value={option.id}>
                   {option.label}
                 </option>
@@ -150,14 +186,18 @@ export default function CategoryPage() {
 
             <div className="modal-actions">
               <button onClick={handleAddCategory}>Add</button>
-              <button onClick={() => {
-                setShowAddModal(false)
-                setNewCategory({ name: '', description: '', parentId: null })
-              }}>Cancel</button>
+              <button
+                onClick={() => {
+                  setShowAddModal(false);
+                  setNewCategory({ name: "", description: "", parentId: null });
+                }}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }

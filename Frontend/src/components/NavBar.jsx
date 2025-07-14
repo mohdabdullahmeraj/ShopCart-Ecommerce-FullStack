@@ -7,7 +7,7 @@ function Navbar() {
   const handleLogout = async () => {
     try {
       await api.post('/admin/logout')
-      navigate('/admin/login')  
+      navigate('/')  
     } catch (err) {
       console.error("Logout failed", err)
     }
