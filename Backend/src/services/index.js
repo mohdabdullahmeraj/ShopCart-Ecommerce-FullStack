@@ -1,7 +1,8 @@
 const CategoryService = require("./category_service");
 const ProductService = require("./product_service");
 const AdminService = require("./admin_service");
+const UserService = require("./user_service");
 
 module.exports = {
-    CategoryService, ProductService, AdminService
+    CategoryService, ProductService, AdminService, UserService
 }
