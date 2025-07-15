@@ -794,3 +794,137 @@ body {
 .role-select button:hover {
   background-color: #3a6fdb;
 }
+.cart-container {
+  max-width: 900px;
+  margin: 50px auto;
+  padding: 25px;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fdfdfd;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: #333;
+}
+
+.empty-text {
+  text-align: center;
+  color: #888;
+  font-size: 1.1rem;
+  padding: 20px;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.cart-item {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.cart-item:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cart-item-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.cart-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cart-item-info h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #222;
+}
+
+.cart-item-info p {
+  margin: 5px 0;
+  color: #555;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.quantity-control button {
+  padding: 6px 12px;
+  font-size: 1rem;
+  background-color: #e2e2e2;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.quantity-control button:hover {
+  background-color: #ccc;
+}
+
+.remove-btn {
+  margin-top: 12px;
+  background-color: #ff5c5c;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.remove-btn:hover {
+  background-color: #e04b4b;
+}
+
+.cart-footer {
+  margin-top: 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 20px 25px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #222;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.clear-cart-btn {
+  background-color: #111;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.clear-cart-btn:hover {
+  background-color: #333;
+}

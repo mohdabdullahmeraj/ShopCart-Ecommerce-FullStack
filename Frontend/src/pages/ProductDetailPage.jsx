@@ -1,111 +1,146 @@
-import { useParams } from 'react-router-dom'
-import { useEffect, useState } from 'react'
-import api from '../services/api'
-import Loader from '../components/Loader'
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../services/api";
+import Loader from "../components/Loader";
+import { getUserRole } from "../utils/auth";
 
 export default function ProductDetailPage() {
-  const { id } = useParams()
-  const [product, setProduct] = useState(null)
-  const [selectedImg, setSelectedImg] = useState(0)
-  const [showReviewForm, setShowReviewForm] = useState(false)
-  const [newReview, setNewReview] = useState('')
+  const { id } = useParams();
+  const [product, setProduct] = useState(null);
+  const [selectedImg, setSelectedImg] = useState(0);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [newReview, setNewReview] = useState("");
 
   useEffect(() => {
-    api.get(`/products/${id}`)
-      .then(res => setProduct(res.data.data))
-      .catch(err => console.error(err))
-  }, [id])
+    api
+      .get(`/products/${id}`)
+      .then((res) => setProduct(res.data.data))
+      .catch((err) => console.error(err));
+  }, [id]);
+
+  const handleAddToCart = async () => {
+    try {
+      await api.post("/cart/add", {
+        productId: product.id,
+        quantity: 1,
+      });
+      alert("Product added to cart!");
+    } catch (err) {
+      console.error("Failed to add to cart", err);
+    }
+  };
 
   const handleAddReview = () => {
+    if (newReview.trim() === "") return;
 
-    if (newReview.trim() === '') return
+    const reviewData = { user: "Anonymous", comment: newReview };
 
-    const reviewData = { user: 'Anonymous', comment: newReview }
-
-    api.post(`/products/${id}/reviews`, reviewData)
+    api
+      .post(`/products/${id}/reviews`, reviewData)
       .then(() => {
-        return api.get(`/products/${id}`)
+        return api.get(`/products/${id}`);
       })
-      .then(res => {
-        setProduct(res.data.data)
-        setNewReview('')
-        setShowReviewForm(false)
+      .then((res) => {
+        setProduct(res.data.data);
+        setNewReview("");
+        setShowReviewForm(false);
       })
-      .catch(err => console.error(err))
+      .catch((err) => console.error(err));
+  };
 
-    }
-
-  if (!product) return <Loader />
+  if (!product) return <Loader />;
 
   return (
-  <div className="product-detail container">
-    <h1 className="product-title">{product.title}</h1>
+    <div className="product-detail container">
+      <h1 className="product-title">{product.title}</h1>
 
-    <div className="image-gallery">
-      <div className="main-image-wrapper">
-        <img
-          src={product.images?.[selectedImg]?.imgUrl}
-          alt="Main"
-          className="main-product-image"
-        />
-      </div>
-      <div className="thumbnail-wrapper">
-        {product.images?.map((img, idx) => (
+      <div className="image-gallery">
+        <div className="main-image-wrapper">
           <img
-            key={idx}
-            src={img.imgUrl}
-            alt={`Thumbnail ${idx}`}
-            className={`thumbnail ${selectedImg === idx ? 'selected' : ''}`}
-            onClick={() => setSelectedImg(idx)}
+            src={product.images?.[selectedImg]?.imgUrl}
+            alt="Main"
+            className="main-product-image"
           />
-        ))}
-      </div>
-    </div>
-
-    <div className="product-info">
-      <p className="product-desc">{product.description}</p>
-      <p className="product-price"><strong>Price:</strong> ₹{product.price}</p>
-      <p className="product-category"><strong>Category ID:</strong> {product.categoryId}</p>
-    </div>
-
-    <div className="reviews-section">
-      <h3>Customer Reviews</h3>
-      {product.reviews?.length ? (
-        product.reviews.map((rev, idx) => (
-          <div key={idx} className="review-box">
-            <strong>{rev.user}</strong>
-            <p>{rev.comment}</p>
-          </div>
-        ))
-      ) : (
-        <p>No reviews yet.</p>
-      )}
-      <button className="primary-btn" onClick={() => setShowReviewForm(true)}>Add Review</button>
-    </div>
-
-    {showReviewForm && (
-      <div className="modal-overlay">
-        <div className="modal-box">
-          <div className="modal-header">
-            <h4>Add Your Review</h4>
-            <button onClick={() => setShowReviewForm(false)} className="close-btn">&times;</button>
-          </div>
-          <div className="modal-body">
-            <textarea
-              rows="4"
-              placeholder="Write your review..."
-              className="review-input"
-              value={newReview}
-              onChange={(e) => setNewReview(e.target.value)}
+        </div>
+        <div className="thumbnail-wrapper">
+          {product.images?.map((img, idx) => (
+            <img
+              key={idx}
+              src={img.imgUrl}
+              alt={`Thumbnail ${idx}`}
+              className={`thumbnail ${selectedImg === idx ? "selected" : ""}`}
+              onClick={() => setSelectedImg(idx)}
             />
-            <div className="modal-actions">
-              <button className="primary-btn" onClick={handleAddReview}>Submit</button>
-              <button className="cancel-btn" onClick={() => setShowReviewForm(false)}>Cancel</button>
+          ))}
+        </div>
+      </div>
+
+      <div className="product-info">
+        <p className="product-desc">{product.description}</p>
+        <p className="product-price">
+          <strong>Price:</strong> ₹{product.price}
+        </p>
+        <p className="product-category">
+          <strong>Category ID:</strong> {product.categoryId}
+        </p>
+      </div>
+
+      <div className="reviews-section">
+        <h3>Customer Reviews</h3>
+        {product.reviews?.length ? (
+          product.reviews.map((rev, idx) => (
+            <div key={idx} className="review-box">
+              <strong>{rev.user}</strong>
+              <p>{rev.comment}</p>
+            </div>
+          ))
+        ) : (
+          <p>No reviews yet.</p>
+        )}
+        <button className="primary-btn" onClick={() => setShowReviewForm(true)}>
+          Add Review
+        </button>
+      </div>
+      {getUserRole() === "user" && (
+        <button className="primary-btn" onClick={handleAddToCart}>
+          Add to Cart
+        </button>
+      )}
+      {showReviewForm && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <div className="modal-header">
+              <h4>Add Your Review</h4>
+              <button
+                onClick={() => setShowReviewForm(false)}
+                className="close-btn"
+              >
+                &times;
+              </button>
+            </div>
+            <div className="modal-body">
+              <textarea
+                rows="4"
+                placeholder="Write your review..."
+                className="review-input"
+                value={newReview}
+                onChange={(e) => setNewReview(e.target.value)}
+              />
+              <div className="modal-actions">
+                <button className="primary-btn" onClick={handleAddReview}>
+                  Submit
+                </button>
+                <button
+                  className="cancel-btn"
+                  onClick={() => setShowReviewForm(false)}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    )}
-  </div>
-)
+      )}
+    </div>
+  );
 }
