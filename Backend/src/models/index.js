@@ -4,6 +4,8 @@ const Category = require('./category')
 const Product = require('./product')
 const ProductImage = require('./productImage')
 const Review = require('./review')
+const Cart = require('./cart')
+const CartItem = require('./cartItem')
 
 Category.hasMany(Product, {foreignKey: 'categoryId'})
 Product.belongsTo(Category, {foreignKey: 'categoryId'})
@@ -17,6 +19,12 @@ ProductImage.belongsTo(Product, {foreignKey: 'productId'})
 Product.hasMany(Review, { foreignKey: 'productId', as: 'reviews' })
 Review.belongsTo(Product, { foreignKey: 'productId' })
 
+User.hasOne(Cart, {foreignKey: 'userId'})
+Cart.belongsTo(User, {foreignKey: 'userId'})
+
+Cart.hasMany(CartItem, {foreignKey: 'cartId'})
+CartItem.belongsTo(Cart, {foreignKey: 'cartId'})
+CartItem.belongsTo(Product, {foreignKey: 'productId'})
 
 module.exports = {
     Category,
@@ -24,5 +32,7 @@ module.exports = {
     ProductImage,
     Admin,
     Review,
-    User
+    User, 
+    Cart,
+    CartItem
 }
