@@ -38,7 +38,7 @@ function Navbar() {
         <Link to="/home">Products</Link>
 
         <div className="category-dropdown-wrapper">
-          <div className="dropdown-trigger">Categories</div>
+          <div className="dropdown-trigger"><Link to="/categories">Categories</Link></div>
           <div className="dropdown-menu-wrapper">
             <CategoryDropdown categories={categoryTree} />
           </div>
