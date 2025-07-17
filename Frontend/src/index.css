@@ -928,3 +928,78 @@ h2 {
 .clear-cart-btn:hover {
   background-color: #333;
 }
+
+.category-dropdown-wrapper {
+  position: relative;
+  color: #007bff;
+  font-weight: 500;
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+
+
+.dropdown-trigger {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown-menu-wrapper {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+}
+
+.category-dropdown-wrapper:hover{
+  text-decoration: underline;
+}
+
+.category-dropdown-wrapper:hover .dropdown-menu-wrapper {
+  display: block;
+  
+}
+
+.category-menu,
+.subcategory-menu {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: white;
+  border: 1px solid #ccc;
+  min-width: 160px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.category-item {
+  position: relative;
+}
+
+.category-link {
+  display: block;
+  padding: 10px 15px;
+  color: #007bff;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.category-link:hover {
+  background-color: #f1f1f1;
+}
+
+.subcategory-menu {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  min-width: 160px;
+  background: white;
+  border: 1px solid #ccc;
+  z-index: 101;
+}
+
+.category-item:hover > .subcategory-menu {
+  display: block;
+}

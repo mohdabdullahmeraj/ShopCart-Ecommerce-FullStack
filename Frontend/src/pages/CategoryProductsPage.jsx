@@ -18,7 +18,7 @@ export default function CategoryProductsPage() {
 
   return (
     <div className="container">
-      <h1>Products in Category #{id}</h1>
+      <h1>Products in Category {id}</h1>
       {products.map(p => <ProductCard key={p.id} product={p} />)}
     </div>
   )
