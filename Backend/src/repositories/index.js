@@ -5,6 +5,7 @@ const AdminRepository = require("./admin_repository")
 const UserRepository = require("./user_repository");
 const CartRepository = require("./cart_repository");
 const CartItemRepository = require("./cart_item_repository");
+const OrderRepository = require("./order_repository");
 
 module.exports = {
     CategoryRepository, 
@@ -13,5 +14,6 @@ module.exports = {
     AdminRepository,
     UserRepository,
     CartRepository,
-    CartItemRepository
+    CartItemRepository,
+    OrderRepository
 }
