@@ -45,6 +45,7 @@ function Navbar() {
         </div>
 
         {role === 'user' && <Link to="/cart">🛒 Cart</Link>}
+        {role === 'user' && <Link to="/orders/me">📦 My Orders</Link>}
         <button className="logout-button" onClick={handleLogout}>Logout</button>
       </div>
     </nav>

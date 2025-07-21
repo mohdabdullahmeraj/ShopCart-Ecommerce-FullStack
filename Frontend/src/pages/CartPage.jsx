@@ -1,44 +1,63 @@
-import { useEffect, useState } from 'react';
-import api from '../services/api';
+import { useEffect, useState } from "react";
+import api from "../services/api";
 
 export default function CartPage() {
   const [cart, setCart] = useState([]);
 
   const fetchCart = async () => {
     try {
-      const res = await api.get('/cart');
+      const res = await api.get("/cart");
       setCart(res.data.data.CartItems || []);
     } catch (err) {
-      console.error('Error fetching cart:', err);
+      console.error("Error fetching cart:", err);
       setCart([]);
     }
   };
 
   const handleRemove = async (itemId) => {
-    await api.delete('/cart/remove', { data: { cartItemId: itemId } });
+    await api.delete("/cart/remove", { data: { cartItemId: itemId } });
     fetchCart();
   };
 
   const handleUpdateQty = async (itemId, quantity) => {
     if (quantity < 1) return;
-    await api.put('/cart/update', { cartItemId: itemId, quantity });
+    await api.put("/cart/update", { cartItemId: itemId, quantity });
     fetchCart();
   };
 
   const handleClearCart = async () => {
-    await api.delete('/cart/clear');
+    await api.delete("/cart/clear");
     fetchCart();
   };
 
+  const handleCheckout = async () => {
+    try {
+      const res = await api.post("/orders", {
+        paymentStatus: "Pending",
+        deliveryStatus: "Processing",
+      });
+      alert("Order placed successfully!");
+      // Clear the cart from state and redirect to My Orders
+      setCart([]);
+      window.location.href = "/orders/me";
+    } catch (err) {
+      console.error("Error placing order:", err);
+      alert("Failed to place order. Try again.");
+    }
+  };
+
   const getTotal = () => {
-    return cart.reduce((total, item) => total + item.Product.price * item.quantity, 0);
+    return cart.reduce(
+      (total, item) => total + item.Product.price * item.quantity,
+      0
+    );
   };
 
   const getMainImage = (images) => {
     return (
       images?.find((img) => img.isMain)?.imgUrl ||
       images?.[0]?.imgUrl ||
-      'https://via.placeholder.com/120'
+      "https://via.placeholder.com/120"
     );
   };
 
@@ -64,11 +83,22 @@ export default function CartPage() {
                 <h4>{item.Product.title}</h4>
                 <p>Price: ₹{item.Product.price}</p>
                 <div className="quantity-control">
-                  <button onClick={() => handleUpdateQty(item.id, item.quantity - 1)}>-</button>
+                  <button
+                    onClick={() => handleUpdateQty(item.id, item.quantity - 1)}
+                  >
+                    -
+                  </button>
                   <span>{item.quantity}</span>
-                  <button onClick={() => handleUpdateQty(item.id, item.quantity + 1)}>+</button>
+                  <button
+                    onClick={() => handleUpdateQty(item.id, item.quantity + 1)}
+                  >
+                    +
+                  </button>
                 </div>
-                <button onClick={() => handleRemove(item.id)} className="remove-btn">
+                <button
+                  onClick={() => handleRemove(item.id)}
+                  className="remove-btn"
+                >
                   Remove
                 </button>
               </div>
@@ -78,6 +108,10 @@ export default function CartPage() {
             <h3>Total: ₹{getTotal()}</h3>
             <button onClick={handleClearCart} className="clear-cart-btn">
               Clear Cart
+            </button>
+
+            <button onClick={handleCheckout} className="checkout-btn">
+              Place Order
             </button>
           </div>
         </div>
