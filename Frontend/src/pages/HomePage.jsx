@@ -23,7 +23,7 @@ export default function HomePage() {
   const limit = parseInt(searchParams.get("limit")) || 10;
   const offset = parseInt(searchParams.get("offset")) || 0;
 
-  const loadProducts = async () => {
+  const loadProducts = async (setProducts, limit, offset) => {
     try {
       const res = await axios.get("http://localhost:3000/api/v1/products", {
         params: { limit, offset },
@@ -87,8 +87,8 @@ export default function HomePage() {
   };
 
   useEffect(() => {
-    loadProducts();
-  }, []);
+    loadProducts(setProducts, limit, offset);
+  }, [limit, offset]);
 
   return (
     <div className="homepage">
